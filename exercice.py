@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 def linear_values() -> np.ndarray:
     return np.linspace(-1.3, 2.5, 64)
 
+# ---------------------------------------------------------------------------------------#
+
 # 2. Créer une fonction qui convertit une liste de coordonnées cartésiennes (x, y) en coordonnées polaires (rayon, angle)
 def coordinate_conversion(cartesian_coordinates: np.ndarray) -> np.ndarray:
     #return np.array([polar(coord) for coord in cartesian_coordinates])
@@ -44,17 +46,29 @@ def find_closest_index(values: np.ndarray, number: float) -> int:
 
     return np.argmin(difference)    # Trouve l'indice de l'élément avec la plus petite différence
 
+# ---------------------------------------------------------------------------------------#
+
 # EXERCICE 4
 # Créons une fonction avec la fonction sin
 def fonction_sin(x):
-    return x**2 * math.sin(1/x**2) + x
+    '''
+    Calcule image de x. Mais on peut faire une meilleure fonction.
+    '''
+    return x**2 * math.sin(1 / x**2) + x
 
+def fonction_sin_efficace(x:np.ndarray) ->np.array:
+    '''
+    Méthode plus efficace pour calculer la fonction sin en utilisant numpy.
+    Calcule tous les sins d'un seul coup.
+    '''
+    return x**2 * np.sin(1 / x**2) + x
 
 # 4. Créer un graphe de y=𝑥^2  sin⁡(1∕𝑥^2 )+𝑥 dans l’intervalle [-1, 1] avec 250 points.
 def draw_graph(fonction, intervalle, n_points):
     # Trouvons les coordonnées x et y
     x = np.linspace(intervalle[0], intervalle[1], n_points)
-    y = [fonction_sin(valeur) for valeur in x]
+    #y = [fonction_sin(valeur) for valeur in x]
+    y = fonction_sin_efficace(x)
 
     # Créons le graphique
     graphique = plt.plot(x,y)
@@ -64,21 +78,23 @@ def draw_graph(fonction, intervalle, n_points):
     plt.setp(graphique, 'color', 'g')   # changer la couleur de la ligne du graphique
     plt.show()
 
+# ---------------------------------------------------------------------------------------#
 # EXERCICE 5
 def fonction_expo(x):
     return math.exp(-x**2)
 
 # 5. Évaluer l’intégrale ∫_(−∞)^∞ 𝑒^(−𝑥^2) 𝑑𝑥. Afficher dans un graphique ∫𝑒^(−𝑥^2) 𝑑𝑥 pour x = [-4, 4].
-def calculer_integrale(fonction, borne_inf, borne_sup, intervalle):
+def calculer_integrale(fonction, borne_inf, borne_sup):
     # Calculons l'estimée de l'intégrale
-    integrale, erreur = quad(fonction_expo, borne_inf, borne_sup)
+    integrale, erreur = quad(fonction, borne_inf, borne_sup)
     print(f'L\'intégrale e^(-x^2) évaluée entre les bornes {borne_inf} et {borne_sup} vaut : {integrale} avec une erreur de {erreur}')
+    return integrale, erreur
 
+def dessiner_graphe(intervalle):
     # Calculons le graphique
-    n_points = 10
+    n_points = 50
     x = np.linspace(intervalle[0], intervalle[1], n_points)
-    y = integrate(fonction_expo, 2)
-    #y = [integrate(fonction_expo, valeur) for valeur in x]
+    y = [integrate(fonction_expo, valeur) for valeur in x]
     print(x, y)
     '''
     # Créons le graphique
@@ -105,13 +121,14 @@ if __name__ == '__main__':
     print(f'Dans les valeurs suivantes : {valeurs}, l\'indice de la valeur la plus proche à {nombre} est : {find_closest_index(valeurs, nombre)}')
 
     # Exercice 4
-    draw_graph('y = x^^2 sin(1/x^2) + x', [-1, 1], 250)
+    #draw_graph('y = x^^2 sin(1/x^2) + x', [-1, 1], 250)
 
     # Exercice 5
     # à compléter!
     borne_inf = np.NINF
     borne_sup = np.Infinity
-    calculer_integrale(fonction_expo, borne_inf, borne_sup, [-4, 4])
-
+    intervalle = [-4,4]
+    calculer_integrale(fonction_expo, borne_inf, borne_sup)
+    dessiner_graphe(intervalle)
 
 
